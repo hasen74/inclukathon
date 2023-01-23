@@ -1,4 +1,4 @@
-# Groupe de solano_b 994887## CODECAMP : INCLUKATHON
+## CODECAMP : INCLUKATHON
 
 These apps are a platform allowing its users to communicate for Inclusion Conseil's event "Inclukhaton". They're composed of **a calendar, a chat service, a contact lists of all the participants, a profile page and an administrator dashboard**. The front app is built with **Vue.js (JavaScript)**. The API is built with **Nest.js (TypeScript)**, and **Prisma**, for database mapping. The app also features a socket servive running with **Socket.io**.
 
