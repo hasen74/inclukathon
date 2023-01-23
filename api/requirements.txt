@@ -1,0 +1,24 @@
+ User CRUD
+
+ GET /users
+ GET /user/id
+ POST /user
+ PATCH /user/id
+ DELETE /user/id
+
+ Access:
+ - If isAdmin : create, read, update, delete
+ - If isCoach : create, read, update, delete WITHIN own peopleGroup
+ - If isUser : read, update self
+
+ PeopleGroup CRUD
+
+ GET /peopleGroup
+ GET /peopleGroup/id
+ POST /peopleGroup
+ PATCH /peopleGroup/id
+ DELETE /peopleGroup/id
+
+ - If IsAdmin : create, read, update, delete
+ - If notAdmin : read own
+

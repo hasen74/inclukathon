@@ -1,0 +1,93 @@
+// database models
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// connects to the mysql database using the data from .env file
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// model for the table containing the users' data
+// one-to-many relation with the peopleGroups table
+// many-to-many relationship with convGroup table through lastView table
+model User {
+  id          Int     @id @default(autoincrement())
+  firstName   String? @map("first_name") @db.VarChar(150)
+  lastName    String? @map("last_name") @db.VarChar(150)
+  gender      String? @db.VarChar(150)
+  pronouns    String? @db.VarChar(150)
+  email       String  @unique @db.VarChar(150)
+  password    String  @unique @db.VarChar(150)
+  disability  String? @db.VarChar(150)
+  description String? @db.VarChar(255)
+  role        Role    @default(USER)
+
+  /// @DtoRelationRequired
+  /// @DtoRelationCanCreateOnCreate
+  /// @DtoRelationCanConnectOnCreate
+  /// @DtoRelationCanCreateOnUpdate
+  /// @DtoRelationCanConnectOnUpdate
+  group         peopleGroup? @relation(fields: [peopleGroupId], references: [id])
+  peopleGroupId Int?
+  lastView      lastView[]
+
+  @@map("users")
+}
+
+// model for the table containing the groups' data
+// one-to-many relationship with the Users table
+model peopleGroup {
+  id    Int    @id @default(autoincrement())
+  name  String @unique @db.VarChar(150)
+  users User[]
+
+  @@map("peopleGroups")
+}
+
+// model for the table containing the chat data
+// many-to-many relationship with Users through lastView
+model convGroup {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(150)
+  firstName String?    @db.VarChar(150)
+  message   String?    @db.VarChar(1000)
+  updated   Boolean    @default(false)
+  deleted   Boolean    @default(false)
+  lastView  lastView[]
+
+  @@map("convGroups")
+}
+
+// model for the table containing the calendar entries
+model calendarEntry {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(200)
+  date  String? @db.VarChar(100)
+  time  String? @db.VarChar(100)
+  color String? @db.VarChar(1000)
+
+  @@map("calendarEntries")
+}
+
+// model for the joining table between Users and ConvGroups
+model lastView {
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  convGroup   convGroup @relation(fields: [convGroupId], references: [id])
+  convGroupId Int
+  lastPost    String?   @db.VarChar(1000)
+  viewPost    String?   @db.VarChar(1000)
+
+  @@id([userId, convGroupId])
+  @@map("lastViews")
+}
+
+// simple enumeration for the Users' possible roles
+enum Role {
+  USER
+  COACH
+  ADMIN
+}
